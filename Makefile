@@ -1,35 +1,27 @@
-USB_CFLAGS!=pkg-config --cflags libusb-1.0
-USB_LDFLAGS!=pkg-config --libs libusb-1.0
+USB_CFLAGS != pkg-config --cflags libusb-1.0
+USB_LDFLAGS != pkg-config --libs libusb-1.0
 
-CSTD=c99
-WARN=-Wall -Wextra -Wno-unknown-pragmas
-WARN=-Weverything
+CSTD=gnu11
+WARN=-Wall -Wextra
 
-CFLAGS?=-O2 -pipe
-CFLAGS+=-std=$(CSTD)
-CFLAGS+=$(WARN)
-CFLAGS+=-Istlink/inc
-CFLAGS+=-Istlink/build/Release/inc
-CFLAGS+=-Istlink/src/stlink-lib
-CFLAGS+=$(USB_CFLAGS)
+CFLAGS ?= -O2 -pipe
+CFLAGS += -std=$(CSTD)
+CFLAGS += $(WARN)
+CFLAGS += $(USB_CFLAGS)
+CFLAGS += -I/usr/include/stlink
 
-LDFLAGS+=stlink/build/Release/lib/libstlink.a
-LDFLAGS+=$(USB_LDFLAGS)
+LDFLAGS += $(USB_LDFLAGS)
+LDFLAGS += -lstlink
 
-all: swd2 # swdd
+all: swd2
 
-stlink/build/Release/lib/libstlink.a:
-	[ -d stlink/.git ] || git submodule update --init
-	make -C stlink
-
-swd2: swd2.c stlink/build/Release/lib/libstlink.a
+swd2: swd2.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 swdd: swdd.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) -lpthread
 
-
-.PHONY: clean
 clean:
 	rm -f swd2 swdd
-	make -C stlink clean
+
+.PHONY: clean
