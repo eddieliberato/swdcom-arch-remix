@@ -27,7 +27,8 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
 #pragma clang diagnostic ignored "-Wpadded"
-#include <stlink.h>
+#include <stlink/stlink.h>
+#include <stlink/read_write.h>
 #pragma clang diagnostic pop
 
 // An evil collection of global variables follows.
